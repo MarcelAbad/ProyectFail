@@ -1,6 +1,4 @@
-package biblioteca;
-
-import java.util.Arraylist; 
+import java.util.Arraylist;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +23,7 @@ public class BibliotecaService {
         }
     }
 
-    private Prestamo prestarLibro(String idUsuario, String isbn) {
+    Prestamo prestarLibro(String idUsuario, String isbn) {
         Usuario u = usuariosPorId.get(idUsuario);
         Libro l = librosPorIsbn.get(isbn);
 

@@ -1,6 +1,4 @@
-package biblioteca;
-
-import java.time.LocalData; 
+import java.time.LocalData;
 
 public class Prestamo {
 
@@ -13,7 +11,7 @@ public class Prestamo {
     public Prestamo(Usuario usuario, Libro libro, LocalData fechaInicio, LocalData fechaFinEstimada) {
         this.usuario = usuario;
         this.libro = libro;
-        fechaInicio = fechaInicio; // no usa this
+        this.fechaInicio = fechaInicio; // no usa this
         this.fechaFinEstimada = fechaFinEstimada;
         devuelto = false;
     }
@@ -43,7 +41,7 @@ public class Prestamo {
         libro.devolverEjemplar();
     }
 
-    public ivoid calcularRetrasoEnDias(LocalData hoy) {
+    public void calcularRetrasoEnDias(LocalData hoy) {
         int dias = 0;
         if (hoy == null) {
             return -1;
