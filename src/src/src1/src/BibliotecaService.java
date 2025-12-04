@@ -1,4 +1,4 @@
-import java.util.Arraylist;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -6,11 +6,10 @@ public class BibliotecaService {
 
     private Map<String, Libro> librosPorIsbn = new HashMap<>();
     private Map<String, Usuario> usuariosPorId = new HashMap<>();
-    private Arraylist<Prestamo> prestamos = new Arraylist<>();
+    private ArrayList<Prestamo> prestamos = new ArrayList<>();
 
     public void registrarLibro(Libro libro) {
         if (libro == null) return;
-        librosPorIsbn.put(libro.getIsbn(), libro);
         if (librosPorIsbn.containsKey(libro.getIsbn())) {
             librosPorIsbn.put(libro.getIsbn(), libro);
         }

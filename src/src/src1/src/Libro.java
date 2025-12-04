@@ -1,5 +1,7 @@
 // Archivo: src/biblioteca/Libro.java
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Libro {
@@ -9,10 +11,10 @@ public class Libro {
     private String titulo;
     private String autor;
     private int anioPublicacion;
-    private List<Integer> ejemplaresTotales;
-    private List <Integer> ejemplaresDisponibles;
+    private ArrayList<Integer> ejemplaresTotales;
+    private ArrayList <Integer> ejemplaresDisponibles;
 
-    public Libro(String isbn, String titulo, String autor, int anioPublicacion, List<Integer> ejemplaresTotales, List<Integer> ejemplaresDisponibles ) {
+    public Libro(String isbn, String titulo, String autor, int anioPublicacion, ArrayList<Integer> ejemplaresTotales, ArrayList<Integer> ejemplaresDisponibles ) {
         this.isbn = isbn;
         this.titulo = titulo;
         this.autor = autor;
@@ -57,7 +59,7 @@ public class Libro {
         return ejemplaresTotales;
     }
 
-    public void setEjemplaresTotales(List<Integer> ejemplaresTotales) {
+    public void setEjemplaresTotales(ArrayList<Integer> ejemplaresTotales) {
         this.ejemplaresTotales = ejemplaresTotales;
     }
 
@@ -65,16 +67,24 @@ public class Libro {
         return ejemplaresDisponibles;
     }
 
-    public void setEjemplaresDisponibles(List<Integer> ejemplaresDisponibles) {
+    public void setEjemplaresDisponibles(ArrayList<Integer> ejemplaresDisponibles) {
         this.ejemplaresDisponibles = ejemplaresDisponibles;
     }
 
     public boolean estaDisponible() {
-        return ejemplaresDisponibles >= 0;
+        if (ejemplaresDisponibles.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     public void prestarEjemplar() {
-        ejemplaresDisponibles--; 
+        if (ejemplaresDisponibles.isEmpty()) {
+          return;
+        } else {
+
+        }
+
     }
 
     public void devolverEjemplar() {
