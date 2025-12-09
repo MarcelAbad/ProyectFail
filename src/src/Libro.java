@@ -1,6 +1,5 @@
 // Archivo: src/biblioteca/Libro.java
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +87,7 @@ public class Libro {
     }
 
     public void devolverEjemplar() {
-        ejemplaresDisponibles = ejemplaresDisponibles + 1;
+        System.out.println(" = ejemplaresDisponibles + 1;");
     }
 
     @Override

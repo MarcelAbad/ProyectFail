@@ -1,13 +1,12 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
 
 public class BibliotecaApp {
 
     private BibliotecaService servicio;
+    private static final Scanner scanner = new Scanner(System.in);
 
     public BibliotecaApp() {
-
         servicio = new BibliotecaService();
     }
 
@@ -17,31 +16,44 @@ public class BibliotecaApp {
     }
 
     private void ejecutarMenu() {
-        Scanner scanner = new Scanner(System.in);
 
         int opcion = -1;
         while (opcion != 0) {
             imprimirMenu();
+
+            // validación simple de enter
+            while (!scanner.hasNextInt()) {
+                System.out.println("Debe ingresar un número.");
+                scanner.next();
+            }
+
             opcion = scanner.nextInt();
 
-            if (opcion == 1) {
-                registrarLibroDesdeConsola(scanner);
-            } else if (opcion == 2) {
-                registrarUsuarioDesdeConsola(scanner);
-            } else if (opcion == 3) {
-                prestarLibroDesdeConsola(scanner);
-            } else if (opcion == 4) {
-                devolverLibroDesdeConsola(scanner);
-            } else if (opcion == 0) {
-                System.out.println("Saliendo...");
-            } else {
-                System.out.println("Opcion no valida");
+            switch (opcion) {
+                case 1:
+                    registrarLibroDesdeConsola();
+                    break;
+                case 2:
+                    registrarUsuarioDesdeConsola();
+                    break;
+                case 3:
+                    prestarLibroDesdeConsola();
+                    break;
+                case 4:
+                    devolverLibroDesdeConsola();
+                    break;
+                case 0:
+                    System.out.println("Saliendo...");
+                    break;
+                default:
+                    System.out.println("Opción no válida");
             }
-        } scanner.close();
+        }
+        scanner.close();
     }
 
     private void imprimirMenu() {
-        System.out.println("=== GESTIÓN BIBLIOTECA ===");
+        System.out.println("\n=== GESTIÓN BIBLIOTECA ===");
         System.out.println("1. Registrar libro");
         System.out.println("2. Registrar usuario");
         System.out.println("3. Prestar libro");
@@ -50,46 +62,71 @@ public class BibliotecaApp {
         System.out.print("Opción: ");
     }
 
-    private void registrarLibroDesdeConsola(Scanner scanner) {
+    private void registrarLibroDesdeConsola() {
+
+        scanner.nextLine();
+
         System.out.print("ISBN: ");
         String isbn = scanner.nextLine();
+
         System.out.print("Título: ");
         String titulo = scanner.nextLine();
+
         System.out.print("Autor: ");
-        String autor = scanner.next();
+        String autor = scanner.nextLine();
+
         System.out.print("Año publicación: ");
         int anioPublicacion = scanner.nextInt();
-        System.out.print("Ejemplares totales: ");
-        ArrayList<Integer> ejemplaresTotales = (ArrayList<Integer>) Collections.singletonList(scanner.nextInt());
-        System.out.print("Ejemplares disponibles: ");
-        ArrayList<Integer> ejemplaresDisponibles = (ArrayList<Integer>) Collections.singletonList(scanner.nextInt());
 
-        Libro libro = new Libro(isbn, titulo, autor, anioPublicacion, ejemplaresTotales , ejemplaresDisponibles);
+        System.out.print("Ejemplares totales: ");
+        int total = scanner.nextInt();
+
+        System.out.print("Ejemplares disponibles: ");
+        int disponibles = scanner.nextInt();
+
+        ArrayList<Integer> ejemplaresTotales = new ArrayList<>();
+        ejemplaresTotales.add(total);
+
+        ArrayList<Integer> ejemplaresDisponibles = new ArrayList<>();
+        ejemplaresDisponibles.add(disponibles);
+
+        Libro libro = new Libro(isbn, titulo, autor, anioPublicacion,
+                ejemplaresTotales, ejemplaresDisponibles);
+
         servicio.registrarLibro(libro);
+
+        System.out.println("Libro registrado con éxito.");
     }
 
-    private void registrarUsuarioDesdeConsola(Scanner scanner) {
+    private void registrarUsuarioDesdeConsola() {
+
         System.out.print("ID usuario: ");
         String id = scanner.next();
+        scanner.nextLine();
+
         System.out.print("Nombre: ");
-        String nombre = scanner.nextLine(); 
+        String nombre = scanner.nextLine();
 
         Usuario usuario = new Usuario(id, nombre);
         servicio.registrarUsuario(usuario);
+
+        System.out.println("Usuario registrado con éxito.");
     }
 
-    private void prestarLibroDesdeConsola(Scanner scanner) {
+    private void prestarLibroDesdeConsola() {
         System.out.print("ID usuario: ");
         String id = scanner.next();
+
         System.out.print("ISBN libro: ");
         String isbn = scanner.next();
 
         servicio.prestarLibro(id, isbn);
     }
 
-    private void devolverLibroDesdeConsola(Scanner scanner) {
+    private void devolverLibroDesdeConsola() {
         System.out.print("ID usuario: ");
         String id = scanner.next();
+
         System.out.print("ISBN libro: ");
         String isbn = scanner.next();
 
