@@ -115,20 +115,20 @@ public class BibliotecaApp {
 
     private void prestarLibroDesdeConsola() {
         System.out.print("ID usuario: ");
-        String id = scanner.next();
-
+        String id = scanner.nextLine();
+        scanner.nextLine();
         System.out.print("ISBN libro: ");
-        String isbn = scanner.next();
+        String isbn = scanner.nextLine();
 
         servicio.prestarLibro(id, isbn);
     }
 
     private void devolverLibroDesdeConsola() {
         System.out.print("ID usuario: ");
-        String id = scanner.next();
-
+        String id = scanner.nextLine();
+        scanner.nextLine();
         System.out.print("ISBN libro: ");
-        String isbn = scanner.next();
+        String isbn = scanner.nextLine();
 
         servicio.devolverLibro(id, isbn);
     }

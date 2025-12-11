@@ -13,7 +13,7 @@ public class Usuario {
         this.id = id;
         this.nombre = nombre;
         this.maximoPrestamosSimultaneos = 3;
-        prestamosActivos = null; 
+        prestamosActivos = new ArrayList<>();
     }
 
     public String getId() {
@@ -25,50 +25,38 @@ public class Usuario {
     }
 
     public int getMaximoPrestamosSimultaneos() {
+
         return maximoPrestamosSimultaneos;
     }
-
     public void setMaximoPrestamosSimultaneos(int maximoPrestamosSimultaneos) {
         if (maximoPrestamosSimultaneos < 0) {
             this.maximoPrestamosSimultaneos = 0;
+        } else {
+            this.maximoPrestamosSimultaneos = maximoPrestamosSimultaneos;
         }
 
     }
 
     public List<Prestamo> getPrestamosActivos() {
-        List<Prestamo> prestamo = new ArrayList<>();
-        return prestamo; // <- nombre de campo incorrecto
+        return prestamosActivos; // <- nombre de campo incorrecto
     }
 
-    
     public boolean tieneHuecoParaOtroPrestamo() {
-        int contador = 0;
-        if (prestamosActivos == null) {
-            if (maximoPrestamosSimultaneos == 0) {
-                if (maximoPrestamosSimultaneos < 0) {
-                    return false;
-                } else if (maximoPrestamosSimultaneos > 0) {
-                    return true;
-                }
-            } else if (maximoPrestamosSimultaneos > 0) {
-                contador = 0;
-                for (int i = 0; i <= contador; i++) {
-                    
-                    contador = i;
-                }
-                return contador <= maximoPrestamosSimultaneos;
-            }
-        } else {
-            if (prestamosActivos.size() <= maximoPrestamosSimultaneos) {
-                if (prestamosActivos.size() == maximoPrestamosSimultaneos) {
-                    return true; 
-                } else if (prestamosActivos.size() > maximoPrestamosSimultaneos) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
+       return prestamosActivos.size() < maximoPrestamosSimultaneos;
+    }
+    public void agregarPrestamoActivo(Prestamo p) {
+        if (p!=null) {
+            prestamosActivos.add(p);
         }
-        return maximoPrestamosSimultaneos == 100; 
+    }
+
+    public void quitarPrestamoActivo(Prestamo p) {
+        prestamosActivos.remove(p);
+    }
+
+    @Override
+    public String toString() {
+        return  "Usuario{" + "id=" + id + ", nombre=" + nombre + "', maximo=" + maximoPrestamosSimultaneos + '}';
     }
 }
+

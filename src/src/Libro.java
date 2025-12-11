@@ -1,25 +1,32 @@
-// Archivo: src/biblioteca/Libro.java
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Libro {
-
-    // Representa un libro físico en la biblioteca
     private String isbn;
     private String titulo;
     private String autor;
     private int anioPublicacion;
     private ArrayList<Integer> ejemplaresTotales;
-    private ArrayList <Integer> ejemplaresDisponibles;
+    private ArrayList<Integer> ejemplaresDisponibles;
 
-    public Libro(String isbn, String titulo, String autor, int anioPublicacion, ArrayList<Integer> ejemplaresTotales, ArrayList<Integer> ejemplaresDisponibles ) {
+    public Libro(String isbn, String titulo, String autor, int anioPublicacion,
+                 ArrayList<Integer> ejemplaresTotales, ArrayList<Integer> ejemplaresDisponibles) {
         this.isbn = isbn;
         this.titulo = titulo;
         this.autor = autor;
         this.anioPublicacion = anioPublicacion;
-        this.ejemplaresTotales = ejemplaresTotales;
-        this.ejemplaresDisponibles = ejemplaresDisponibles;
+        this.ejemplaresTotales = new ArrayList<>(ejemplaresTotales);
+        this.ejemplaresDisponibles = new ArrayList<>(ejemplaresDisponibles);
+    }
+
+    public Libro(String isbn, String titulo, String autor, int anioPublicacion,
+                 ArrayList<Integer> ejemplaresTotales) {
+        this.isbn = isbn;
+        this.titulo = titulo;
+        this.autor = autor;
+        this.anioPublicacion = anioPublicacion;
+        this.ejemplaresTotales = new ArrayList<>(ejemplaresTotales);
+        this.ejemplaresDisponibles = new ArrayList<>(ejemplaresTotales);
     }
 
     public String getIsbn() {
@@ -55,7 +62,7 @@ public class Libro {
     }
 
     public List<Integer> getEjemplaresTotales() {
-        return ejemplaresTotales;
+        return new ArrayList<>(ejemplaresTotales); // Devuelve copia para proteger la lista original
     }
 
     public void setEjemplaresTotales(ArrayList<Integer> ejemplaresTotales) {
@@ -63,7 +70,7 @@ public class Libro {
     }
 
     public List<Integer> getEjemplaresDisponibles() {
-        return ejemplaresDisponibles;
+        return new ArrayList<>(ejemplaresDisponibles); // Devuelve copia
     }
 
     public void setEjemplaresDisponibles(ArrayList<Integer> ejemplaresDisponibles) {
@@ -71,24 +78,68 @@ public class Libro {
     }
 
     public boolean estaDisponible() {
-        if (ejemplaresDisponibles.isEmpty()) {
-            return false;
-        }
-        return true;
+        return !ejemplaresDisponibles.isEmpty();
     }
 
-    public void prestarEjemplar() {
+    public Integer prestarEjemplar() {
         if (ejemplaresDisponibles.isEmpty()) {
-          return;
+            return null; // No hay ejemplares disponibles
         } else {
-
+            Integer ejemplarPrestado = ejemplaresDisponibles.remove(0);
+            return ejemplarPrestado;
         }
-
     }
 
-    public void devolverEjemplar() {
-        System.out.println(" = ejemplaresDisponibles + 1;");
+
+//    public boolean prestarEjemplarEspecifico(Integer numeroEjemplar) {
+//        return ejemplaresDisponibles.remove(numeroEjemplar);
+//    }
+
+
+    public boolean devolverEjemplar(Integer numeroEjemplar) {
+        if (ejemplaresTotales.contains(numeroEjemplar)) {
+            if (!ejemplaresDisponibles.contains(numeroEjemplar)) {
+                ejemplaresDisponibles.add(numeroEjemplar);
+                return true;
+            }
+        }
+        return false;
     }
+
+//
+//    public boolean agregarEjemplar(Integer nuevoEjemplar) {
+//        if (!ejemplaresTotales.contains(nuevoEjemplar)) {
+//            ejemplaresTotales.add(nuevoEjemplar);
+//            ejemplaresDisponibles.add(nuevoEjemplar);
+//            return true;
+//        }
+//        return false;
+//    }
+
+
+//    public boolean eliminarEjemplar(Integer numeroEjemplar) {
+//        if (ejemplaresTotales.contains(numeroEjemplar)) {
+//            // Solo podemos eliminar si está disponible
+//            if (ejemplaresDisponibles.contains(numeroEjemplar)) {
+//                ejemplaresTotales.remove(numeroEjemplar);
+//                ejemplaresDisponibles.remove(numeroEjemplar);
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+
+
+    public List<Integer> getEjemplaresPrestados() {
+        List<Integer> prestados = new ArrayList<>(ejemplaresTotales);
+        prestados.removeAll(ejemplaresDisponibles);
+        return prestados;
+    }
+
+
+//    public int getCantidadPrestados() {
+//        return ejemplaresTotales.size() - ejemplaresDisponibles.size();
+//    }
 
     @Override
     public String toString() {
@@ -99,6 +150,7 @@ public class Libro {
                 ", anioPublicacion=" + anioPublicacion +
                 ", ejemplaresTotales=" + ejemplaresTotales +
                 ", ejemplaresDisponibles=" + ejemplaresDisponibles +
+                ", ejemplaresPrestados=" + getEjemplaresPrestados() +
                 '}';
-    } 
+    }
 }

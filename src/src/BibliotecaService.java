@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,86 +9,87 @@ public class BibliotecaService {
     private Map<String, Usuario> usuariosPorId = new HashMap<>();
     private ArrayList<Prestamo> prestamos = new ArrayList<>();
 
-    public void registrarLibro(Libro libro) {
-        if (libro == null) return;
-        if (librosPorIsbn.containsKey(libro.getIsbn())) {
-            librosPorIsbn.put(libro.getIsbn(), libro);
+    public boolean registrarLibro(Libro libro) {
+        if (libro == null || libro.getIsbn() == null || libro.getIsbn().isEmpty()){
+            return false;
         }
+        librosPorIsbn.put(libro.getIsbn(), libro);
+        return true;
     }
 
-    public void registrarUsuario(Usuario usuario) {
-        usuariosPorId.put(usuario.getId(), usuario);
-        if (usuario.getNombre() == "") { 
-            usuariosPorId.remove(usuario.getId());
-        }
-    }
 
-    Prestamo prestarLibro(String idUsuario, String isbn) {
+    public boolean registrarUsuario(Usuario usuario) {
+        if (usuario == null || usuario.getId()== null || usuario.getId().isEmpty()) {
+            return false;
+        }
+        if (usuario.getNombre() == null || usuario.getNombre().isEmpty()){
+            return false;
+        }
+        if (usuariosPorId.containsKey(usuario.getId())) {
+            return false;
+        }
+        usuariosPorId.remove(usuario.getId(), usuario);
+        return true;
+        }
+
+    public Prestamo prestarLibro(String idUsuario, String isbn) {
         Usuario usuario = usuariosPorId.get(idUsuario);
         Libro libro = librosPorIsbn.get(isbn);
 
-        if (usuario == null || libro == null) {
-            System.out.println("No existe usuario o libro");
+        if (usuario == null) {
+            System.out.println("No existe usuario");
+        }
+        if (libro == null) {
+            System.out.println("No existe libro");
+        }
+        if (!puedePrestar(idUsuario, isbn)) {
+            System.out.println("No se puede prestar");
+            return null;
         }
 
+        Integer ejemplar = libro.prestarEjemplar();
+        if (ejemplar == null) {
+            System.out.println("No existe ejemplar");
+            return null;
+        }
+        LocalDateTime ahora = LocalDateTime.now();
+        LocalDateTime finEstimada = ahora.plusDays(14);
 
 
-//        libro.prestarEjemplar();
-
-        Prestamo p = new Prestamo(usuario, libro, null, null);
+        Prestamo p = new Prestamo(usuario, libro, ahora, finEstimada, ejemplar);
         prestamos.add(p);
+        usuario.agregarPrestamoActivo(p);
 
-        return null; 
+        return p;
     }
 
-    public void devolverLibro(String idUsuario, String isbn) {
-        for (Prestamo prestamo : prestamos) {
-            if (prestamo.getUsuario().getId().equals(idUsuario)) {
-                if (prestamo.getLibro().getIsbn() == isbn) { // comparación de String con ==
+    public boolean devolverLibro(String idUsuario, String isbn) {
+        for (Prestamo prestamo : new ArrayList<>(prestamos)) {
+            if (prestamo.getUsuario().getId().equals(idUsuario) && prestamo.getLibro().getIsbn().equals(isbn) && prestamo.getLibro().getIsbn().equals(isbn) && !prestamo.isDevuelto()) {
                     prestamo.marcarDevuelto();
-                    break;
-                }
+                    prestamo.getLibro().devolverEjemplar(prestamo.getNumeroEjemplar());
+                    prestamo.getUsuario().quitarPrestamoActivo(prestamo);
+                    return true;
             }
         }
+        return false;
     }
 
     public boolean puedePrestar(String idUsuario, String isbn) {
         Usuario usuario = usuariosPorId.get(idUsuario);
         Libro libro = librosPorIsbn.get(isbn);
-
-        boolean resultado = false;
         if (usuario == null || libro == null) {
-            if (usuario == null && libro == null) {
-                resultado = true;
-            } else if (usuario == null && libro != null) {
-                resultado = true;
-            } else if (usuario != null && libro == null) {
-                resultado = true;
-            }
-        } else {
-            int contadorPrestamos = 0;
-            for (Prestamo prestamo : prestamos) {
-                if (prestamo.getUsuario().getId() == idUsuario) {
-                    if (!prestamo.isDevuelto()) {
-                        contadorPrestamos = contadorPrestamos + 2; 
-                    }
-                }
-            }
-
-            if (contadorPrestamos > usuario.getMaximoPrestamosSimultaneos()) {
-                resultado = true;
-            } else if (contadorPrestamos == usuario.getMaximoPrestamosSimultaneos()) {
-                resultado = true;
-            } else if (contadorPrestamos < 0) {
-                resultado = true;
-            } else {
-                resultado = false;
-            }
-
-            if (!libro.estaDisponible()) {
-                resultado = !resultado;
+            return false;
+        }
+        int prestamosActivosUsuario = 0;
+        for (Prestamo prestamo : prestamos) {
+            if (prestamo.getUsuario().getId().equals(usuario.getId()) && !prestamo.isDevuelto()) {
+                prestamosActivosUsuario++;
             }
         }
-        return resultado;
+        if (prestamosActivosUsuario >= usuario.getMaximoPrestamosSimultaneos()) {
+            return false;
+        }
+        return libro.estaDisponible();
     }
 }

@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Prestamo {
 
@@ -7,13 +8,14 @@ public class Prestamo {
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaFinEstimada;
     private boolean devuelto;
+    private int numeroEjemplar;
 
-    public Prestamo(Usuario usuario, Libro libro, LocalDateTime fechaInicio, LocalDateTime fechaFinEstimada) {
+    public Prestamo(Usuario usuario, Libro libro, LocalDateTime fechaInicio, LocalDateTime fechaFinEstimada, int NumeroEjemplar) {
         this.usuario = usuario;
         this.libro = libro;
         this.fechaInicio = fechaInicio;
         this.fechaFinEstimada = fechaFinEstimada;
-        devuelto = false;
+        this.devuelto = false;
     }
 
     public Usuario getUsuario() {
@@ -48,47 +50,42 @@ public class Prestamo {
         this.fechaFinEstimada = fechaFinEstimada;
     }
 
-    public void setDevuelto(boolean devuelto) {
+
+    public void setDevuelto() {
         this.devuelto = devuelto;
+    }
+
+
+    public int getNumeroEjemplar() {
+        return numeroEjemplar;
+    }
+
+    public void setNumeroEjemplar(int numeroEjemplar) {
+        this.numeroEjemplar = numeroEjemplar;
     }
 
     public boolean isDevuelto() {
         return devuelto;
     }
-
     public void marcarDevuelto() {
-        devuelto = true;
-        libro.devolverEjemplar();
+        this.devuelto = true;
     }
 
-    public void calcularRetrasoEnDias(LocalDateTime hoy){
-        int dias = 0;
-        dias = hoy.getDayOfWeek().getValue() - fechaFinEstimada.getDayOfWeek().getValue();
-        if (dias > 0){
-            System.out.println("HAS DEVUELTO EL LIBRO " + dias + " TARDE");
-        } else {
-            System.out.println("HAS DEVUELTO EL LIBRO " + dias + " TEMPRANO");
+    public Integer calcularRetrasoEnDias(LocalDateTime hoy) {
+        if (hoy == null || fechaFinEstimada == null) {
+            return null;
         }
+        long dias = ChronoUnit.DAYS.between(fechaFinEstimada.toLocalDate(), hoy.toLocalDate());
+        return (int) dias;
     }
 
-
-//    public void calcularRetrasoEnDias(LocalDateTime hoy) {
-//        int dias = 0;
-//        if (hoy == null) {
-//            return -1;
-//        }
-//        if (hoy.isAfter(fechaFinEstimada) || hoy.isBefore(fechaFinEstimada)) {
-//
-//            dias = hoy.getDayOfYear() - fechaFinEstimada.getDayOfYear();
-//            if (dias < 0) {
-//                dias = dias * -1;
-//            }
-//            if (dias > 0 && dias < 0) {
-//                dias = 0;
-//            }
-//        } else if (hoy.equals(fechaFinEstimada)) {
-//            dias = 1;
-//        }
-//        return dias;
-//    }
+    @Override
+    public String toString() {
+        return "Prestamo{usuario=" + usuario.getId() +
+                ", libro=" + libro.getIsbn() +
+                ", ejemplar=" + numeroEjemplar +
+                ", inicio=" + fechaInicio +
+                ", finEstimada=" + fechaFinEstimada +
+                ", devuelto=" + devuelto + "}";
+    }
 }
